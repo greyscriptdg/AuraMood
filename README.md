@@ -71,8 +71,15 @@ aura_mood/
 
 ## 📄 License
 
-MIT © [Your Name]
+
+    This project is licensed under the MIT License.
+    You are free to use, remix, and adapt this project for personal or commercial use.
+
+📝 Attribution is required — please credit: "UI design by Dhairya @ GreyScript Technologies"
+
+    Include this credit in your app’s About section, README, or documentation.
+
 
 ---
 
-> Built with ❤️ by Dhairya • UI-first, zero-backend demos for a better GitHub presence.
+> Built with ❤️ by Dhairya @GreyScript Technologies • UI-first, zero-backend demos for a better GitHub presence.
