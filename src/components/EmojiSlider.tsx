@@ -17,7 +17,6 @@ export const EmojiSlider: React.FC<EmojiSliderProps> = ({ onMoodChange, isDarkMo
   const messageAnim = useRef(new Animated.Value(1)).current;
 
   const handleEmojiPress = (index: number) => {
-    // Fade out message
     Animated.timing(messageAnim, {
       toValue: 0,
       duration: 200,
@@ -26,7 +25,6 @@ export const EmojiSlider: React.FC<EmojiSliderProps> = ({ onMoodChange, isDarkMo
       setSelectedIndex(index);
       onMoodChange(MOODS[index].name, index);
       
-      // Bounce animation
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 1.2,
@@ -41,7 +39,6 @@ export const EmojiSlider: React.FC<EmojiSliderProps> = ({ onMoodChange, isDarkMo
         }),
       ]).start();
 
-      // Fade in message
       Animated.timing(messageAnim, {
         toValue: 1,
         duration: 300,

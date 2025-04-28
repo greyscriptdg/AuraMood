@@ -50,7 +50,9 @@ export const MoodCard: React.FC<MoodCardProps> = ({ mood, isDarkMode }) => {
       >
         Current Mood
       </Text>
-      <Text style={[styles.mood, { color: '#6C63FF' }]}>{mood}</Text>
+      <Text style={[styles.mood, { color: '#6C63FF' }]}>
+        {mood}
+      </Text>
     </Animated.View>
   );
 };
