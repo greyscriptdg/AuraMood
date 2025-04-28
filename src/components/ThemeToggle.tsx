@@ -1,19 +1,62 @@
+import React, { useEffect, useRef } from 'react';
+import { StyleSheet, Switch, View, Animated } from 'react-native';
 
-import React from 'react';
-import { Switch, View, Text } from 'react-native';
+interface ThemeToggleProps {
+  isDarkMode: boolean;
+  onToggle: () => void;
+}
 
-export default function ThemeToggle() {
-  const [enabled, setEnabled] = React.useState(false);
+export const ThemeToggle: React.FC<ThemeToggleProps> = ({
+  isDarkMode,
+  onToggle,
+}) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
-      <Text style={{ color: 'white', marginRight: 10 }}>Dark Mode</Text>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          opacity: fadeAnim,
+          backgroundColor: isDarkMode
+            ? 'rgba(255, 255, 255, 0.1)'
+            : 'rgba(0, 0, 0, 0.05)',
+        },
+      ]}
+    >
       <Switch
-        trackColor={{ false: '#767577', true: '#00adb5' }}
-        thumbColor={enabled ? '#eeeeee' : '#f4f3f4'}
-        onValueChange={() => setEnabled(prev => !prev)}
-        value={enabled}
+        value={isDarkMode}
+        onValueChange={onToggle}
+        trackColor={{ false: '#767577', true: '#81b0ff' }}
+        thumbColor={isDarkMode ? '#6C63FF' : '#f4f3f4'}
+        ios_backgroundColor="#3e3e3e"
       />
-    </View>
+    </Animated.View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    padding: 8,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+});
