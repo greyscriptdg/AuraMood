@@ -1,107 +1,134 @@
-<<<<<<< Updated upstream
+import React, { useState, useRef } from 'react';
+import { StyleSheet, View, Text, Animated, TouchableOpacity, Dimensions } from 'react-native';
+import { MOODS } from '../utils/moodData';
 
-import React, { useState } from 'react';
-import { View, Text, Slider } from 'react-native';
-
-const emojis = ['😞', '😐', '😊', '😁', '🤩'];
-
-export default function EmojiSlider() {
-  const [value, setValue] = useState(2);
-
-  return (
-    <View style={{ alignItems: 'center', marginBottom: 30 }}>
-      <Text style={{ fontSize: 40 }}>{emojis[Math.round(value)]}</Text>
-      <Slider
-        style={{ width: '90%', height: 40 }}
-        minimumValue={0}
-        maximumValue={4}
-        step={1}
-        value={value}
-        onValueChange={setValue}
-        minimumTrackTintColor="#00adb5"
-        maximumTrackTintColor="#393e46"
-      />
-    </View>
-  );
-}
-=======
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme } from '../context/ThemeContext';
-import { Mood } from '../types/mood';
-
-const MOODS: { [key in Mood]: string } = {
-  sad: '😢',
-  neutral: '😐',
-  happy: '😊',
-  excited: '😄',
-  ecstatic: '🤩',
-};
+const { width } = Dimensions.get('window');
+const EMOJI_SIZE = 50;
+const EMOJI_SPACING = 20;
 
 interface EmojiSliderProps {
-  onMoodChange: (mood: Mood) => void;
-  currentMood: Mood;
+  onMoodChange: (mood: string, index: number) => void;
+  isDarkMode: boolean;
 }
 
-export const EmojiSlider: React.FC<EmojiSliderProps> = ({ onMoodChange, currentMood }) => {
-  const { theme } = useTheme();
-  const moodKeys = Object.keys(MOODS) as Mood[];
+export const EmojiSlider: React.FC<EmojiSliderProps> = ({ onMoodChange, isDarkMode }) => {
+  const [selectedIndex, setSelectedIndex] = useState(2);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const messageAnim = useRef(new Animated.Value(1)).current;
+
+  const handleEmojiPress = (index: number) => {
+    Animated.timing(messageAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      setSelectedIndex(index);
+      onMoodChange(MOODS[index].name, index);
+      
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 1.2,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          friction: 3,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      Animated.timing(messageAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
 
   return (
     <View style={styles.container}>
-      {moodKeys.map((mood) => (
-        <TouchableOpacity
-          key={mood}
-          style={[
-            styles.emojiContainer,
-            {
-              backgroundColor: currentMood === mood ? theme.card : 'transparent',
-              borderWidth: currentMood === mood ? 2 : 0,
-              borderColor: currentMood === mood ? theme.text : 'transparent',
-            },
-          ]}
-          onPress={() => onMoodChange(mood)}
-        >
-          <Text
-            style={[
-              styles.emoji,
-              {
-                color: theme.emoji,
-                fontSize: currentMood === mood ? 36 : 28,
-              },
-            ]}
-          >
-            {MOODS[mood]}
-          </Text>
-        </TouchableOpacity>
-      ))}
+      <Text style={[styles.label, { color: isDarkMode ? '#FFFFFF' : '#333333' }]}>
+        How are you feeling today?
+      </Text>
+      <View style={styles.sliderContainer}>
+        {MOODS.map((mood, index) => {
+          const isSelected = index === selectedIndex;
+          const scale = isSelected ? scaleAnim : 1;
+          
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleEmojiPress(index)}
+              activeOpacity={0.7}
+            >
+              <Animated.View
+                style={[
+                  styles.emojiContainer,
+                  {
+                    transform: [{ scale }],
+                    opacity: isSelected ? 1 : 0.5,
+                    backgroundColor: isSelected
+                      ? isDarkMode
+                        ? 'rgba(255, 255, 255, 0.1)'
+                        : 'rgba(0, 0, 0, 0.05)'
+                      : 'transparent',
+                  },
+                ]}
+              >
+                <Text style={styles.emoji}>{mood.emoji}</Text>
+              </Animated.View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+      <Animated.View style={[styles.messageContainer, { opacity: messageAnim }]}>
+        <Text style={[styles.message, { color: isDarkMode ? '#FFFFFF' : '#333333' }]}>
+          {MOODS[selectedIndex].message}
+        </Text>
+      </Animated.View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
     alignItems: 'center',
-    marginVertical: 24,
-    paddingHorizontal: 8,
+    padding: 20,
+  },
+  label: {
+    fontSize: 24,
+    marginBottom: 30,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  sliderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: width - 40,
+    paddingHorizontal: 20,
   },
   emojiContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: EMOJI_SIZE,
+    height: EMOJI_SIZE,
+    borderRadius: EMOJI_SIZE / 2,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 4,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
+    marginHorizontal: EMOJI_SPACING / 2,
   },
   emoji: {
-    fontSize: 28,
+    fontSize: 30,
+  },
+  messageContainer: {
+    marginTop: 20,
+    padding: 10,
+  },
+  message: {
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+    opacity: 0.8,
   },
 });
->>>>>>> Stashed changes

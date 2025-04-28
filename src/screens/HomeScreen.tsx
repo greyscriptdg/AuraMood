@@ -1,12 +1,3 @@
-<<<<<<< Updated upstream
-
-import React from 'react';
-import { View, Text, SafeAreaView } from 'react-native';
-import EmojiSlider from '../components/EmojiSlider';
-import MoodCard from '../components/MoodCard';
-import AuraBackground from '../components/AuraBackground';
-import ThemeToggle from '../components/ThemeToggle';
-=======
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, SafeAreaView } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
@@ -38,25 +29,8 @@ export default function HomeScreen() {
       return newHistory;
     });
   };
->>>>>>> Stashed changes
 
-export default function HomeScreen() {
   return (
-<<<<<<< Updated upstream
-    <SafeAreaView style={{ flex: 1 }}>
-      <AuraBackground />
-      <View style={{ flex: 1, padding: 20 }}>
-        <ThemeToggle />
-        <Text style={{ fontSize: 28, fontWeight: 'bold', color: 'white', marginBottom: 20 }}>
-          How are you feeling today?
-        </Text>
-        <EmojiSlider />
-        <MoodCard mood="Happy" description="Feeling light and joyful." />
-      </View>
-    </SafeAreaView>
-  );
-}
-=======
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <AuraBackground mood={currentMood} />
       <ScrollView style={styles.content} keyboardShouldPersistTaps="handled">
@@ -126,4 +100,3 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
->>>>>>> Stashed changes

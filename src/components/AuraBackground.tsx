@@ -1,17 +1,3 @@
-<<<<<<< Updated upstream
-
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-
-export default function AuraBackground() {
-  return <View style={styles.container} />;
-}
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#222831',
-=======
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
@@ -73,6 +59,5 @@ const styles = StyleSheet.create({
     borderRadius: 1000,
     top: '-50%',
     left: '-50%',
->>>>>>> Stashed changes
   },
 });
