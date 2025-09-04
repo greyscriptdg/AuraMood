@@ -1,4 +1,3 @@
-
 # 🌈 AuraMood – Animated Emotion Journal
 
 **AuraMood** is a beautifully animated **UI-only** mobile journal built with React Native and Expo. It allows users to track and reflect their emotions through visual elements like glowing auras, emoji sliders, and animated cards — all without any backend.
@@ -42,8 +41,8 @@
 ```bash
 git clone https://github.com/yourusername/aura_mood.git
 cd aura_mood
-npm install
-expo start
+npm install --legacy-peer-deps
+npm start -- --reset-cache
 ```
 
 > Scan QR with Expo Go or run on Android/iOS simulator
@@ -77,7 +76,7 @@ aura_mood/
 
 📝 Attribution is required — please credit: "UI design by Dhairya @ GreyScript Technologies"
 
-    Include this credit in your app’s About section, README, or documentation.
+    Include this credit in your app's About section, README, or documentation.
 
 
 ---

@@ -1,30 +1,11 @@
-<<<<<<< Updated upstream
-
-import React from 'react';
-import { Switch, View, Text } from 'react-native';
-
-export default function ThemeToggle() {
-  const [enabled, setEnabled] = React.useState(false);
-
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
-      <Text style={{ color: 'white', marginRight: 10 }}>Dark Mode</Text>
-      <Switch
-        trackColor={{ false: '#767577', true: '#00adb5' }}
-        thumbColor={enabled ? '#eeeeee' : '#f4f3f4'}
-        onValueChange={() => setEnabled(prev => !prev)}
-        value={enabled}
-      />
-    </View>
-  );
-}
-=======
+// ThemeToggle: Button to toggle between light and dark mode
 import React from 'react';
 import { TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 
-export const ThemeToggle: React.FC = () => {
+// ThemeToggle component
+const ThemeToggle: React.FC = () => {
   const { isDarkMode, toggleTheme } = useTheme();
 
   return (
@@ -49,6 +30,9 @@ export const ThemeToggle: React.FC = () => {
   );
 };
 
+export default ThemeToggle;
+
+// Styles for ThemeToggle
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
@@ -72,4 +56,3 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
 });
->>>>>>> Stashed changes

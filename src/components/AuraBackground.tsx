@@ -1,78 +1,55 @@
-<<<<<<< Updated upstream
-
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-
-export default function AuraBackground() {
-  return <View style={styles.container} />;
-}
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#222831',
-=======
+// AuraBackground: Animated background that changes color based on mood
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
+import LottieView from 'lottie-react-native';
 import { useTheme } from '../context/ThemeContext';
-import { Mood } from '../types/mood';
+import { MoodKey } from '../utils/moodData';
 
 interface AuraBackgroundProps {
-  mood: Mood;
+  mood: MoodKey;
 }
 
-export const AuraBackground: React.FC<AuraBackgroundProps> = ({ mood }) => {
+// Animated aura background component using Lottie
+const AuraBackground: React.FC<AuraBackgroundProps> = ({ mood }) => {
   const { theme } = useTheme();
-  const colorAnim = useRef(new Animated.Value(0)).current;
-  const prevMood = useRef(mood);
+  // Map moods to Lottie color filters or different files if needed
+  // For now, use one Lottie file and change color via theme
+  const lottieRef = useRef<LottieView>(null);
 
   useEffect(() => {
-    Animated.timing(colorAnim, {
-      toValue: 1,
-      duration: 600,
-      useNativeDriver: false,
-    }).start(() => {
-      colorAnim.setValue(0);
-      prevMood.current = mood;
-    });
+    // Restart animation on mood change
+    lottieRef.current?.reset();
+    lottieRef.current?.play();
   }, [mood]);
-
-  const prevColor = theme.aura[prevMood.current];
-  const nextColor = theme.aura[mood];
-
-  const backgroundColor = colorAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [prevColor, nextColor],
-  });
 
   return (
     <View style={styles.container} pointerEvents="none">
-      <Animated.View
-        style={[
-          styles.aura,
-          {
-            backgroundColor,
-            opacity: 0.3,
-          },
-        ]}
+      <LottieView
+        ref={lottieRef}
+        source={require('../../assets/lottie/aura_background.json')}
+        autoPlay
+        loop
+        style={styles.lottie}
+        // Optionally, you can use color filters or pass props to change color based on mood
       />
     </View>
   );
 };
 
+export default AuraBackground;
+
+// Styles for AuraBackground
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     overflow: 'hidden',
     zIndex: -1,
   },
-  aura: {
+  lottie: {
+    width: '100%',
+    height: '100%',
     position: 'absolute',
-    width: '200%',
-    height: '200%',
-    borderRadius: 1000,
-    top: '-50%',
-    left: '-50%',
->>>>>>> Stashed changes
+    top: 0,
+    left: 0,
   },
 });

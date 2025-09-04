@@ -1,22 +1,17 @@
-<<<<<<< Updated upstream
-
-import React from 'react';
-import { View, Text, SafeAreaView } from 'react-native';
-import EmojiSlider from '../components/EmojiSlider';
-import MoodCard from '../components/MoodCard';
-import AuraBackground from '../components/AuraBackground';
-import ThemeToggle from '../components/ThemeToggle';
-=======
+// HomeScreen: Main screen for mood selection and history
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, SafeAreaView } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
-import { AuraBackground } from '../components/AuraBackground';
-import { EmojiSlider } from '../components/EmojiSlider';
-import { MoodCard } from '../components/MoodCard';
-import { ThemeToggle } from '../components/ThemeToggle';
+import AuraBackground from '../components/AuraBackground';
+import EmojiSlider from '../components/EmojiSlider';
+import MoodCard from '../components/MoodCard';
+import ThemeToggle from '../components/ThemeToggle';
 import * as Haptics from 'expo-haptics';
 import { Mood } from '../types/mood';
+import { moods, MoodKey } from '../utils/moodData';
+import MoodHistoryList from '../components/MoodHistoryList';
 
+// Motivational messages for each mood
 const motivationalMessages = {
   sad: "It's okay to feel down. Tomorrow is a new day.",
   neutral: "Every moment is a fresh beginning.",
@@ -27,10 +22,11 @@ const motivationalMessages = {
 
 export default function HomeScreen() {
   const { theme } = useTheme();
-  const [currentMood, setCurrentMood] = useState<Mood>('neutral');
-  const [moodHistory, setMoodHistory] = useState<Mood[]>([]);
+  const [currentMood, setCurrentMood] = useState<MoodKey>('neutral');
+  const [moodHistory, setMoodHistory] = useState<MoodKey[]>([]);
 
-  const handleMoodChange = (mood: Mood) => {
+  // Handle mood change from EmojiSlider
+  const handleMoodChange = (mood: MoodKey) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setCurrentMood(mood);
     setMoodHistory(prev => {
@@ -38,61 +34,42 @@ export default function HomeScreen() {
       return newHistory;
     });
   };
->>>>>>> Stashed changes
 
-export default function HomeScreen() {
+  // Get motivational message from moodData
+  const currentMoodData = moods.find(m => m.key === currentMood);
+  const motivationalMessage = currentMoodData ? currentMoodData.quote : '';
+
   return (
-<<<<<<< Updated upstream
-    <SafeAreaView style={{ flex: 1 }}>
-      <AuraBackground />
-      <View style={{ flex: 1, padding: 20 }}>
-        <ThemeToggle />
-        <Text style={{ fontSize: 28, fontWeight: 'bold', color: 'white', marginBottom: 20 }}>
-          How are you feeling today?
-        </Text>
-        <EmojiSlider />
-        <MoodCard mood="Happy" description="Feeling light and joyful." />
-      </View>
-    </SafeAreaView>
-  );
-}
-=======
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}> 
+      {/* Animated aura background based on mood */}
       <AuraBackground mood={currentMood} />
       <ScrollView style={styles.content} keyboardShouldPersistTaps="handled">
+        {/* Theme toggle button */}
         <ThemeToggle />
         <View style={styles.header}>
           <Text style={[styles.title, { color: theme.text }]}>How are you feeling?</Text>
         </View>
+        {/* Emoji slider for mood selection */}
         <EmojiSlider
           onMoodChange={handleMoodChange}
           currentMood={currentMood}
         />
+        {/* Main mood card */}
         <MoodCard
           mood={currentMood}
         />
-        <Text style={[styles.motivationalMessage, { color: theme.text }]}>
-          {motivationalMessages[currentMood]}
+        {/* Motivational message */}
+        <Text style={[styles.motivationalMessage, { color: theme.text }]}> 
+          {motivationalMessage}
         </Text>
-        {moodHistory.length > 0 && (
-          <View style={styles.historyContainer}>
-            <Text style={[styles.historyTitle, { color: theme.text }]}>Recent Moods</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {moodHistory.map((mood, index) => (
-                <MoodCard
-                  key={index}
-                  mood={mood}
-                  isHistory
-                />
-              ))}
-            </ScrollView>
-          </View>
-        )}
+        {/* Mood history cards */}
+        <MoodHistoryList history={moodHistory} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
+// Styles for HomeScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -126,4 +103,3 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
->>>>>>> Stashed changes

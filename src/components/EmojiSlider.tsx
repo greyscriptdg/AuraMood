@@ -1,84 +1,73 @@
-<<<<<<< Updated upstream
-
-import React, { useState } from 'react';
-import { View, Text, Slider } from 'react-native';
-
-const emojis = ['😞', '😐', '😊', '😁', '🤩'];
-
-export default function EmojiSlider() {
-  const [value, setValue] = useState(2);
-
-  return (
-    <View style={{ alignItems: 'center', marginBottom: 30 }}>
-      <Text style={{ fontSize: 40 }}>{emojis[Math.round(value)]}</Text>
-      <Slider
-        style={{ width: '90%', height: 40 }}
-        minimumValue={0}
-        maximumValue={4}
-        step={1}
-        value={value}
-        onValueChange={setValue}
-        minimumTrackTintColor="#00adb5"
-        maximumTrackTintColor="#393e46"
-      />
-    </View>
-  );
-}
-=======
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+// EmojiSlider: Lets the user select their mood using emoji buttons
+import React, { useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
-import { Mood } from '../types/mood';
-
-const MOODS: { [key in Mood]: string } = {
-  sad: '😢',
-  neutral: '😐',
-  happy: '😊',
-  excited: '😄',
-  ecstatic: '🤩',
-};
+import { moods, MoodKey } from '../utils/moodData';
 
 interface EmojiSliderProps {
-  onMoodChange: (mood: Mood) => void;
-  currentMood: Mood;
+  onMoodChange: (mood: MoodKey) => void;
+  currentMood: MoodKey;
 }
 
-export const EmojiSlider: React.FC<EmojiSliderProps> = ({ onMoodChange, currentMood }) => {
+// EmojiSlider component
+const EmojiSlider: React.FC<EmojiSliderProps> = ({ onMoodChange, currentMood }) => {
   const { theme } = useTheme();
-  const moodKeys = Object.keys(MOODS) as Mood[];
+  // Animated values for each emoji
+  const anims = useRef(moods.map(() => new Animated.Value(0))).current;
+
+  useEffect(() => {
+    // Animate the selected emoji to scale up smoothly
+    moods.forEach((mood, idx) => {
+      Animated.spring(anims[idx], {
+        toValue: currentMood === mood.key ? 1 : 0,
+        useNativeDriver: true,
+        friction: 5,
+        tension: 120,
+      }).start();
+    });
+  }, [currentMood]);
 
   return (
     <View style={styles.container}>
-      {moodKeys.map((mood) => (
-        <TouchableOpacity
-          key={mood}
-          style={[
-            styles.emojiContainer,
-            {
-              backgroundColor: currentMood === mood ? theme.card : 'transparent',
-              borderWidth: currentMood === mood ? 2 : 0,
-              borderColor: currentMood === mood ? theme.text : 'transparent',
-            },
-          ]}
-          onPress={() => onMoodChange(mood)}
-        >
-          <Text
+      {moods.map((mood, idx) => {
+        const scale = anims[idx].interpolate({
+          inputRange: [0, 1],
+          outputRange: [1, 1.3],
+        });
+        return (
+          <TouchableOpacity
+            key={mood.key}
             style={[
-              styles.emoji,
+              styles.emojiContainer,
               {
-                color: theme.emoji,
-                fontSize: currentMood === mood ? 36 : 28,
+                backgroundColor: currentMood === mood.key ? theme.card : 'transparent',
+                borderWidth: currentMood === mood.key ? 2 : 0,
+                borderColor: currentMood === mood.key ? theme.text : 'transparent',
               },
             ]}
+            onPress={() => onMoodChange(mood.key)}
           >
-            {MOODS[mood]}
-          </Text>
-        </TouchableOpacity>
-      ))}
+            <Animated.Text
+              style={[
+                styles.emoji,
+                {
+                  color: theme.emoji,
+                  transform: [{ scale }],
+                },
+              ]}
+            >
+              {mood.emoji}
+            </Animated.Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
 
+export default EmojiSlider;
+
+// Styles for EmojiSlider
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -104,4 +93,3 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
 });
->>>>>>> Stashed changes

@@ -1,44 +1,11 @@
-<<<<<<< Updated upstream
-
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-
-export default function MoodCard({ mood, description }: { mood: string, description: string }) {
-  return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{mood}</Text>
-      <Text style={styles.description}>{description}</Text>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 20,
-    padding: 20,
-    marginVertical: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 15,
-    backdropFilter: 'blur(10px)',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 6,
-  },
-  description: {
-    fontSize: 16,
-    color: '#eee',
-=======
+// MoodCard: Displays the selected mood with emoji and name
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { Mood } from '../types/mood';
+import { moods, MoodKey } from '../utils/moodData';
 
+// Emoji and name for each mood
 const MOODS: { [key in Mood]: { emoji: string; name: string } } = {
   sad: { emoji: '😢', name: 'Sad' },
   neutral: { emoji: '😐', name: 'Neutral' },
@@ -48,12 +15,16 @@ const MOODS: { [key in Mood]: { emoji: string; name: string } } = {
 };
 
 interface MoodCardProps {
-  mood: Mood;
+  mood: MoodKey;
   isHistory?: boolean;
 }
 
-export const MoodCard: React.FC<MoodCardProps> = ({ mood, isHistory = false }) => {
+// MoodCard component
+const MoodCard: React.FC<MoodCardProps> = ({ mood, isHistory = false }) => {
   const { theme } = useTheme();
+  // Find mood data from centralized moodData
+  const moodData = moods.find(m => m.key === mood);
+  if (!moodData) return null;
   return (
     <View
       style={[
@@ -65,12 +36,15 @@ export const MoodCard: React.FC<MoodCardProps> = ({ mood, isHistory = false }) =
         },
       ]}
     >
-      <Text style={styles.emoji}>{MOODS[mood].emoji}</Text>
-      <Text style={[styles.moodName, { color: theme.text }]}>{MOODS[mood].name}</Text>
+      <Text style={styles.emoji}>{moodData.emoji}</Text>
+      <Text style={[styles.moodName, { color: theme.text }]}>{moodData.name}</Text>
     </View>
   );
 };
 
+export default MoodCard;
+
+// Styles for MoodCard
 const styles = StyleSheet.create({
   container: {
     padding: 12,
@@ -95,6 +69,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
->>>>>>> Stashed changes
   },
 });
